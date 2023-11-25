@@ -5,6 +5,7 @@ const {
   validateRegisterUser,
   validateLoginUser,
 } = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 const register = asyncHandler(async (req, res) => {
   const { error } = validateRegisterUser(req.body);
@@ -55,15 +56,15 @@ const login = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "invalid email or password" });
   }
 
-  // const token = jwt.sign(
-  //   { id: user._id, username: user.username },
-  //   "secretKey",
-  //   {
-  //     expiresIn: "4d",  // expireTime
-  //   }
-  // );
+  const token = jwt.sign(
+    { id: user._id, username: user.username },
+    "secretKey",
+    {
+      expiresIn: "10h", // expireTime
+    }
+  );
 
-  const token = user.generateToken();
+  // const token = user.generateToken();
 
   const { password, ...other } = user._doc;
 
